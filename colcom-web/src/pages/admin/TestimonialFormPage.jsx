@@ -43,7 +43,7 @@ export function TestimonialFormPage({ id }) {
       .then((response) => {
         const item = response.data;
         setForm({
-          pais_id: item.paises?.id || '',
+          pais_id: item.pais_id || item.paises?.id || '',
           nombre: item.nombre || '',
           cargo: item.cargo || '',
           empresa: item.empresa || '',
@@ -66,7 +66,7 @@ export function TestimonialFormPage({ id }) {
     setSaving(true);
     setError('');
     try {
-      const payload = { ...form, pais_id: Number(form.pais_id || userCountryId) };
+      const payload = { ...form, pais_id: form.pais_id || userCountryId };
       if (editing) await testimoniosApi.update(id, payload);
       else await testimoniosApi.create(payload);
       navigate('/admin/testimonios');

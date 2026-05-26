@@ -1,7 +1,7 @@
-export const COUNTRY_SLUGS = ['colombia', 'chile', 'ecuador'];
+export const COUNTRY_SLUGS = ['argentina', 'chile'];
 export const CONTENT_STATES = ['borrador', 'publicado', 'despublicado'];
-export const REQUEST_STATES = ['pendiente', 'en_proceso', 'gestionada', 'cerrada'];
-export const CONTACT_PURPOSES = ['Servicio', 'Programa EDIFICA', 'Shows y conferencias'];
+export const REQUEST_STATES = ['pendiente', 'leido', 'respondido'];
+export const CONTACT_PURPOSES = ['Cotizacion', 'Informacion', 'Alianza', 'Soporte'];
 
 export const canDeleteContent = (role) => ['superadmin', 'admin_pais'].includes(role);
 export const canManageRequests = (role) => ['superadmin', 'admin_pais'].includes(role);

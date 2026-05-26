@@ -1,0 +1,20 @@
+# Base de datos — conexión pooling (runtime NestJS)
+DATABASE_URL=postgresql://postgres.pbdwphfortpwlkrzyrpc:mV3wMH0qCtbDSWvy@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true
+
+# Base de datos — conexión directa (migraciones)
+DIRECT_URL=postgresql://postgres:mV3wMH0qCtbDSWvy@db.pbdwphfortpwlkrzyrpc.supabase.co:5432/postgres
+
+# Supabase (para Storage — ve a Settings → API y copia estas dos)
+SUPABASE_URL=https://pbdwphfortpwlkrzyrpc.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBiZHdwaGZvcnRwd2xrcnp5cnBjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODY3NTM2NCwiZXhwIjoyMDk0MjUxMzY0fQ.fJ_-kWmzMApKFYyiihkBp-i4rw8pC5SdXyb1zfeteTw
+
+# JWT
+JWT_SECRET=colcom_jwt_secret_super_seguro_2024
+JWT_EXPIRES_IN=8h
+
+# Servidor
+PORT=3001
+CORS_ORIGIN=http://localhost:3000
+
+# Chatbot (Docker network interno)
+CHATBOT_URL=http://chatbot-latam-backend:80002q

@@ -1,9 +1,13 @@
 import { apiRequest } from './client.js';
 
+const unwrap = async (promise) => {
+  const res = await promise;
+  return res.data;
+};
+
 export const paisesApi = {
-  publicActive: () => apiRequest('/public/countries'),
-  active: () => apiRequest('/countries/active'),
-  all: () => apiRequest('/countries'),
-  getById: (id) => apiRequest(`/countries/${id}`),
-  update: (id, data) => apiRequest(`/countries/${id}`, { method: 'PUT', body: data }),
+  publicActive: () => unwrap(apiRequest('/paises')),
+  active: () => unwrap(apiRequest('/paises')),
+  all: () => unwrap(apiRequest('/paises')),
+  getById: (id) => apiRequest(`/paises/${id}`),
 };

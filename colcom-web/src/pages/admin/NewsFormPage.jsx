@@ -42,7 +42,7 @@ export function NewsFormPage({ id }) {
       .then((response) => {
         const item = response.data;
         setForm({
-          pais_id: item.paises?.id || '',
+          pais_id: item.pais_id || item.paises?.id || '',
           titulo: item.titulo || '',
           slug: item.slug || '',
           resumen: item.resumen || '',
@@ -69,7 +69,7 @@ export function NewsFormPage({ id }) {
     setError('');
     const payload = {
       ...form,
-      pais_id: Number(form.pais_id || userCountryId),
+      pais_id: form.pais_id || userCountryId,
       slug: form.slug || slugify(form.titulo),
     };
     try {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { solicitudesApi } from '../../api/solicitudes.api.js';
 import { useCountry } from '../../hooks/useCountry.js';
+import { usePaises } from '../../hooks/usePaises.ts';
 import { CONTACT_PURPOSES } from '../../utils/constants.js';
 
 const initialForm = {
@@ -13,7 +14,8 @@ const initialForm = {
 };
 
 export function ContactPage() {
-  const { countries, activeCountry } = useCountry();
+  const { activeCountry } = useCountry();
+  const { paises, loading: loadingPaises, error: paisesError } = usePaises();
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('');
@@ -44,7 +46,7 @@ export function ContactPage() {
     if (!validate()) return;
     setSubmitting(true);
     try {
-      await solicitudesApi.createPublic({ ...form, pais_id: Number(form.pais_id) });
+      await solicitudesApi.createPublic({ ...form, pais_id: form.pais_id });
       setStatus('Solicitud enviada correctamente.');
       setForm({ ...initialForm, pais_id: activeCountry?.id || '' });
     } catch (error) {
@@ -62,6 +64,7 @@ export function ContactPage() {
         <p>El equipo del pais seleccionado recibira la informacion para gestionarla.</p>
       </div>
       <form className="form-panel" onSubmit={submit}>
+        <p className="eyebrow">POST /api/solicitudes/public</p>
         <label>Nombre<input value={form.nombre} onChange={(e) => update('nombre', e.target.value)} /></label>
         {errors.nombre && <small>{errors.nombre}</small>}
         <label>Correo<input value={form.correo} onChange={(e) => update('correo', e.target.value)} /></label>
@@ -76,12 +79,13 @@ export function ContactPage() {
         </label>
         {errors.finalidad && <small>{errors.finalidad}</small>}
         <label>Pais
-          <select value={form.pais_id} onChange={(e) => update('pais_id', e.target.value)}>
-            <option value="">Seleccionar</option>
-            {countries.map((country) => <option key={country.id} value={country.id}>{country.nombre}</option>)}
+          <select value={form.pais_id} onChange={(e) => update('pais_id', e.target.value)} disabled={loadingPaises}>
+            <option value="">{loadingPaises ? 'Cargando paises...' : 'Seleccionar'}</option>
+            {paises.map((country) => <option key={country.id} value={country.id}>{country.nombre}</option>)}
           </select>
         </label>
         {errors.pais_id && <small>{errors.pais_id}</small>}
+        {paisesError && <small>{paisesError}</small>}
         <label>Mensaje<textarea value={form.mensaje} onChange={(e) => update('mensaje', e.target.value)} rows="5" /></label>
         {status && <div className={status.includes('correctamente') ? 'alert alert-success' : 'alert alert-error'}>{status}</div>}
         <button className="btn btn-primary" disabled={submitting}>{submitting ? 'Enviando...' : 'Enviar solicitud'}</button>
