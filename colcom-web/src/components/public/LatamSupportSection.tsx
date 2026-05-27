@@ -1,6 +1,10 @@
 import React from 'react';
+import { useCountry } from '../../hooks/useCountry';
 
 export function LatamSupportSection() {
+  const { activeCountry } = useCountry();
+  const primaryColor = activeCountry?.colors?.[0] || '#7A0A83';
+
   const cards = [
     {
       title: 'Personas y familias en reconstrucción productiva',
@@ -35,8 +39,13 @@ export function LatamSupportSection() {
   ];
 
   return (
-    <section className="py-24 px-4 bg-gray-50 border-t border-gray-100">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-24 px-4 border-t border-gray-100 relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${primaryColor}15 0%, ${primaryColor}05 100%)` }}>
+      {/* Decorative Blur */}
+      <div 
+        className="absolute bottom-0 left-0 w-full h-64 opacity-20 pointer-events-none"
+        style={{ background: `radial-gradient(ellipse at bottom, ${primaryColor}, transparent 70%)` }}
+      />
+      <div className="max-w-7xl mx-auto relative z-10">
         <h2 className="text-3xl font-extrabold text-center mb-6 text-gray-900 uppercase tracking-wide">
           A QUIÉNES APOYAMOS
           <div className="h-1 w-24 mx-auto mt-4 rounded-full bg-purple-600" />

@@ -36,13 +36,14 @@ export function PublicHeader() {
 
   const themeColor = getThemeColor(activeSlug);
 
+  const basePath = activeSlug === 'latam' ? '/' : `/${activeSlug}`;
+
   const navLinks: NavLinkConfig[] = [
-    { id: 'somos', label: 'Quiénes somos', path: '/testimonios' },
-    { id: 'impacto', label: 'Nuestro impacto', path: '/testimonios' },
-    { id: 'equipo', label: 'Equipo', path: '/' },
-    { id: 'noticias', label: 'Noticias', path: '/noticias' },
-    { id: 'contacto', label: 'Contáctenos', path: '/latam/contacto' },
-    //{ id: 'aula', label: 'Tu aula', path: '/login' },
+    { id: 'somos', label: 'Quiénes somos', path: `${basePath}#somos` },
+    { id: 'impacto', label: 'Nuestro impacto', path: `${basePath}#impacto` },
+    { id: 'equipo', label: 'Equipo', path: `${basePath}#equipo` },
+    { id: 'noticias', label: 'Noticias', path: `${basePath}#noticias` },
+    { id: 'contacto', label: 'Contáctenos', path: `${basePath}#contacto` },
   ];
 
   return (

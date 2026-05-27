@@ -6,7 +6,7 @@ import { RoleRoute } from './RoleRoute.jsx';
 import { navigate } from './navigation.js';
 import { useCountry } from '../hooks/useCountry.js';
 import { LandingPage } from '../pages/public/LandingPage';
-import { NewsPage } from '../pages/public/NewsPage.jsx';
+import { NewsSection } from '../components/public/NewsSection.tsx';
 import { NewsDetailPage } from '../pages/public/NewsDetailPage.jsx';
 import { TestimonialsPage } from '../pages/public/TestimonialsPage.jsx';
 import { LatamContactSection } from '../components/public/LatamContactSection.tsx';
@@ -24,6 +24,7 @@ import { FilesPage } from '../pages/admin/FilesPage.jsx';
 import { AuditPage } from '../pages/admin/AuditPage.jsx';
 import { NotFoundPage } from '../pages/public/NotFoundPage.tsx';
 import { LoadingScreen } from '../components/public/LoadingScreen.tsx';
+import { SecuritySettingsPage } from '../pages/admin/SecuritySettingsPage.tsx';
 
 import ChatWidget from '../components/widget/ChatWidget.jsx';
 
@@ -86,6 +87,7 @@ export function AppRouter() {
       if (path === '/admin/paises') return <RoleRoute allowed={['superadmin']}><CountriesPage /></RoleRoute>;
       if (path === '/admin/usuarios') return <RoleRoute allowed={['superadmin']}><UsersPage /></RoleRoute>;
       if (path === '/admin/archivos') return <FilesPage />;
+      if (path === '/admin/seguridad') return <SecuritySettingsPage />;
       if (path === '/admin/auditoria') return <RoleRoute allowed={['superadmin', 'admin_pais']}><AuditPage /></RoleRoute>;
       if (path === '/admin/solicitudes') return <RoleRoute allowed={['superadmin', 'admin_pais']}><RequestsPage /></RoleRoute>;
       if (segments[1] === 'solicitudes' && segments[2]) return <RoleRoute allowed={['superadmin', 'admin_pais']}><RequestDetailPage id={segments[2]} /></RoleRoute>;
@@ -101,7 +103,6 @@ export function AppRouter() {
     return (
       <ProtectedRoute>
         <AdminLayout>{protectedPage}</AdminLayout>
-        <ChatWidget country={widgetCountry} title="Asistente Virtual" placeholder="Escribe tu mensaje..." />
       </ProtectedRoute>
     );
   }
@@ -109,7 +110,7 @@ export function AppRouter() {
   const publicPage = (() => {
     if (path === '/') return <LandingPage />;
     if (segments[0] && !reservedPaths.has(segments[0])) return <LandingPage />;
-    if (path === '/noticias') return <NewsPage />;
+    if (path === '/noticias') return <NewsSection />;
     if (segments[0] === 'noticias' && segments[1]) return <NewsDetailPage slug={segments[1]} />;
     if (path === '/testimonios') return <TestimonialsPage />;
     if (path === '/contacto') return <ContactPage />;

@@ -3,6 +3,10 @@ import { useAuth } from '../../hooks/useAuth';
 import { navigate } from '../../routes/navigation';
 import { useCountry } from '../../hooks/useCountry';
 import latLogo from '../../assets/imgs/latComparte.png';
+import quieto from '../../assets/imgs/quieto.png';
+import ojosTapados from '../../assets/imgs/ojosTapados.png';
+import tapados from '../../assets/imgs/tapados.mp4';
+import destapados from '../../assets/imgs/destapados.mp4';
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -11,6 +15,27 @@ export function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const [passwordActive, setPasswordActive] = useState(false);
+  const [mascotState, setMascotState] = useState<'idle' | 'covering' | 'covered' | 'uncovering'>('idle');
+
+  React.useEffect(() => {
+    if (passwordActive) {
+      setMascotState('covering');
+    } else {
+      if (mascotState === 'covering' || mascotState === 'covered') {
+        setMascotState('uncovering');
+      }
+    }
+  }, [passwordActive]);
+
+  const handleVideoEnded = () => {
+    if (mascotState === 'covering') {
+      setMascotState('covered');
+    } else if (mascotState === 'uncovering') {
+      setMascotState('idle');
+    }
+  };
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -67,10 +92,22 @@ export function LoginPage() {
         }}
       />
 
-      <form
-        onSubmit={submit}
-        className="relative z-10 bg-white rounded-xl shadow-2xl p-8 md:p-10 w-full max-w-[400px] flex flex-col items-center"
-      >
+      {/* Contenedor Principal (Mascota + Form) */}
+      <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center md:justify-around gap-12 mt-12">
+        
+        {/* Mascota Interactiva (Oculta en móviles) */}
+        <div className="hidden md:flex w-[450px] h-[450px] items-center justify-center relative select-none pointer-events-none">
+          {mascotState === 'idle' && <img src={quieto} alt="Mascot Idle" className="w-full h-full object-contain drop-shadow-2xl" />}
+          {mascotState === 'covering' && <video key="covering" src={tapados} autoPlay muted playsInline onEnded={handleVideoEnded} className="w-full h-full object-contain drop-shadow-2xl" />}
+          {mascotState === 'covered' && <img src={ojosTapados} alt="Mascot Covered" className="w-full h-full object-contain drop-shadow-2xl" />}
+          {mascotState === 'uncovering' && <video key="uncovering" src={destapados} autoPlay muted playsInline onEnded={handleVideoEnded} className="w-full h-full object-contain drop-shadow-2xl" />}
+        </div>
+
+        {/* Formulario */}
+        <form
+          onSubmit={submit}
+          className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 w-full max-w-[450px] flex flex-col items-center border border-white/20 backdrop-blur-sm"
+        >
         <img
           src={latLogo}
           alt="Latinoamérica Comparte"
@@ -146,6 +183,10 @@ export function LoginPage() {
                   password: e.target.value,
                 })
               }
+              onFocus={() => setPasswordActive(true)}
+              onBlur={() => setPasswordActive(false)}
+              onMouseEnter={() => setPasswordActive(true)}
+              onMouseLeave={() => setPasswordActive(false)}
               required
             />
 
@@ -221,6 +262,7 @@ export function LoginPage() {
           {loading ? 'INGRESANDO...' : 'INGRESAR'}
         </button>
       </form>
+      </div>
     </div>
   );
 }

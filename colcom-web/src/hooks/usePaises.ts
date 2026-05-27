@@ -21,7 +21,8 @@ export function usePaises() {
     setError(null);
     try {
       const token = getToken();
-      const response = await fetch(`${API_BASE}/paises`, {
+      // Usar endpoint público para no fallar en el frontend público
+      const response = await fetch(`${API_BASE}/public/paises`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       const res = await response.json() as ApiEnvelope<Pais[]>;

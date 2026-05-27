@@ -44,10 +44,7 @@ export function LandingPage() {
     { id: 3, nombre: 'Laura Gómez', empresa: 'Startup C', contenido: 'Excelente plataforma para conectar.', destacado: false },
   ];
 
-  const displayNoticias = noticias.length > 0 ? noticias : [
-    { id: 1, titulo: 'Nueva alianza estratégica para emprendedores', resumen: 'Firmamos un acuerdo con socios clave para impulsar la educación digital...', fecha_publicacion: new Date().toISOString() },
-    { id: 2, titulo: 'Resultados del trimestre con impacto social', resumen: 'Hemos logrado impactar a más de 10,000 personas en comunidades vulnerables...', fecha_publicacion: new Date().toISOString() }
-  ];
+  const displayNoticias = noticias;
 
   const sectionsText = activeCountry?.sectionsText || {
     whatWeDo: `QUÉ HACEMOS EN ${activeCountry?.nombre?.toUpperCase()}`,
@@ -63,20 +60,20 @@ export function LandingPage() {
 
       {activeSlug === 'latam' ? (
         <>
-          <LatamAboutSection />
+          <div id="somos"><LatamAboutSection /></div>
           <LatamSupportSection />
           <LatamMissionSection />
-          <LatamImpactSection />
+          <div id="impacto"><LatamImpactSection /></div>
           <LatamPartnersSection />
-          <LatamTeamSection />
-          <NewsSection noticias={noticias} />
+          <div id="equipo"><LatamTeamSection /></div>
+          <div id="noticias"><NewsSection noticias={noticias} /></div>
           <LatamHowToSupportSection />
-          <LatamContactSection />
+          <div id="contacto"><LatamContactSection /></div>
           <LatamFinalPhrase />
         </>
       ) : (
         <>
-          <SupportSection />
+          <div id="somos"><SupportSection /></div>
 
           {/* Qué Hacemos */}
           <section className="py-24 px-4 max-w-7xl mx-auto">
@@ -129,18 +126,20 @@ export function LandingPage() {
           <HistorySection />
 
           {/* Gallery and Impact Section */}
-          <GalleryAndImpactSection 
-            testimonios={displayTestimonios} 
-            noticias={displayNoticias} 
-            metrics={metrics} 
-            sectionsText={sectionsText} 
-          />
+          <div id="impacto">
+            <GalleryAndImpactSection 
+              testimonios={displayTestimonios} 
+              noticias={displayNoticias} 
+              metrics={metrics} 
+              sectionsText={sectionsText} 
+            />
+          </div>
 
           <TestimonialsSection testimonios={testimonios} />
 
-          <CTASection />
+          <div id="contacto"><CTASection /></div>
 
-          <NewsSection noticias={noticias} />
+          <div id="noticias"><NewsSection noticias={noticias} /></div>
         </>
       )}
     </div>

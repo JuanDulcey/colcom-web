@@ -11,7 +11,7 @@ export const noticiasApi = {
   uploadImage: (id, file) => {
     const form = new FormData();
     form.append('file', file);
-    return apiRequest(`/noticias/${id}/imagen`, { method: 'PATCH', body: form });
+    return apiRequest(`/noticias/${id}/imagen`, { method: 'POST', body: form });
   },
   remove: (id) => apiRequest(`/noticias/${id}`, { method: 'DELETE' }),
 };

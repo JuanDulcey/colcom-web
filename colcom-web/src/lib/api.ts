@@ -111,7 +111,8 @@ export async function apiRequest<T>(
   return envelope;
 }
 
-export const toQuery = (params: Record<string, string | number | boolean | undefined | null>) => {
+export const toQuery = (params?: Record<string, string | number | boolean | undefined | null>) => {
+  if (!params) return '';
   const query = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== '') query.set(key, String(value));

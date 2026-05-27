@@ -2,17 +2,24 @@ import React from 'react';
 import { useCountry } from '../../hooks/useCountry';
 import { navigate } from '../../routes/navigation';
 
+import imgCarolina from '../../assets/imgs/team_carolina_1779904009902.png';
+import imgMarcela from '../../assets/imgs/team_marcela_1779904024727.png';
+import imgEduardo from '../../assets/imgs/team_eduardo_1779904037978.png';
+import imgAngie from '../../assets/imgs/team_angie_1779904052228.png';
+import imgMariana from '../../assets/imgs/team_mariana_1779904067709.png';
+import imgNancy from '../../assets/imgs/team_nancy_1779904082426.png';
+
 export function LatamTeamSection() {
   const { activeCountry } = useCountry();
   const primaryColor = activeCountry?.colors?.[0] || '#7A0A83';
 
   const team = [
-    { name: 'Carolina Ruiz', role: 'Cofundadora y CEO para Latinoamérica Comparte' },
-    { name: 'Marcela Moreno', role: 'Directora de Relacionamiento para Colombia y Latinoamérica' },
-    { name: 'Eduardo Del Castillo', role: 'Cofundador y Vicepresidente comercial para Latinoamérica Comparte' },
-    { name: 'Angie Castañeda', role: 'Coordinadora Académica programa de Emprendimiento Edifica' },
-    { name: 'Mariana Gómez', role: 'Directora de Mercadeo' },
-    { name: 'Nancy Vivas', role: 'Directora de comunicación y estrategia digital' }
+    { name: 'Carolina Ruiz', role: 'Cofundadora y CEO para Latinoamérica Comparte', image: imgCarolina },
+    { name: 'Marcela Moreno', role: 'Directora de Relacionamiento para Colombia y Latinoamérica', image: imgMarcela },
+    { name: 'Eduardo Del Castillo', role: 'Cofundador y Vicepresidente comercial para Latinoamérica Comparte', image: imgEduardo },
+    { name: 'Angie Castañeda', role: 'Coordinadora Académica programa de Emprendimiento Edifica', image: imgAngie },
+    { name: 'Mariana Gómez', role: 'Directora de Mercadeo', image: imgMariana },
+    { name: 'Nancy Vivas', role: 'Directora de comunicación y estrategia digital', image: imgNancy }
   ];
 
   return (
@@ -31,9 +38,7 @@ export function LatamTeamSection() {
           {team.map((member, index) => (
             <div key={index} className="flex flex-col items-center p-8 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
               <div className="w-32 h-32 rounded-full mb-6 bg-gray-200 border-4 border-gray-50 shadow-inner flex items-center justify-center text-gray-400 overflow-hidden">
-                <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
+                <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">{member.name}</h3>
               <p className="text-sm text-gray-500 text-center uppercase tracking-wider font-medium">{member.role}</p>

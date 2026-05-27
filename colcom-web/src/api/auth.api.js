@@ -13,4 +13,6 @@ export const authApi = {
   securityQuestion: (username) => apiRequest('/auth/security-question', { method: 'POST', body: { username } }),
   forgotPassword: (payload) => apiRequest('/auth/forgot-password', { method: 'POST', body: payload }),
   changeMyPassword: (payload) => apiRequest('/auth/change-my-password', { method: 'PATCH', body: payload }),
+  updateSecurityQuestion: (payload) => apiRequest('/auth/security-question', { method: 'PATCH', body: payload }),
+  getSecurityQuestionMe: () => apiRequest('/auth/security-question/me', { method: 'GET' }),
 };

@@ -6,10 +6,10 @@ export function LatamAboutSection() {
   const primaryColor = activeCountry?.colors?.[0] || '#7A0A83';
 
   return (
-    <section className="py-24 px-4 bg-white relative overflow-hidden">
+    <section className="py-24 px-4 relative overflow-hidden bg-gray-50 border-b border-gray-100">
       {/* Decorative Circle */}
       <div 
-        className="absolute -top-40 -right-40 w-96 h-96 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none"
+        className="absolute -top-40 -right-40 w-96 h-96 rounded-full mix-blend-multiply filter blur-3xl opacity-30 pointer-events-none"
         style={{ backgroundColor: primaryColor }}
       />
 

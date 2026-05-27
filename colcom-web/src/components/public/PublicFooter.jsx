@@ -81,19 +81,19 @@ export function PublicFooter() {
               Navega
             </h4>
             <button
-              onClick={() => navigate("/testimonios")}
+              onClick={() => navigate(`${activeSlug === 'latam' ? '/' : `/${activeSlug}`}#somos`)}
               className="text-left hover:text-white transition-colors w-fit"
             >
               Quiénes somos
             </button>
             <button
-              onClick={() => navigate("/testimonios")}
+              onClick={() => navigate(`${activeSlug === 'latam' ? '/' : `/${activeSlug}`}#impacto`)}
               className="text-left hover:text-white transition-colors w-fit"
             >
               Nuestro impacto
             </button>
             <button
-              onClick={() => navigate("/contacto")}
+              onClick={() => navigate(`${activeSlug === 'latam' ? '/' : `/${activeSlug}`}#equipo`)}
               className="text-left hover:text-white transition-colors w-fit"
             >
               Equipo

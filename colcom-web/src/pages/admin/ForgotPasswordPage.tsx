@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { apiRequest } from '../../api/client.js';
+import { authApi } from '../../api/auth.api.js';
 import { navigate } from '../../routes/navigation';
 import { useCountry } from '../../hooks/useCountry';
 import latLogo from '../../assets/imgs/latComparte.png';
@@ -14,6 +14,29 @@ export function ForgotPasswordPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [lockUntil, setLockUntil] = useState<Date | null>(null);
+  const [countdown, setCountdown] = useState<string>('');
+
+  React.useEffect(() => {
+    let interval: any;
+    if (lockUntil) {
+      interval = setInterval(() => {
+        const now = new Date();
+        const diff = lockUntil.getTime() - now.getTime();
+        if (diff <= 0) {
+          setLockUntil(null);
+          setCountdown('');
+          setError('');
+          clearInterval(interval);
+        } else {
+          const m = Math.floor(diff / 60000);
+          const s = Math.floor((diff % 60000) / 1000);
+          setCountdown(`${m}:${s.toString().padStart(2, '0')}`);
+        }
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [lockUntil]);
 
   const handleUsernameSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,9 +44,9 @@ export function ForgotPasswordPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await apiRequest(`/auth/security-question?username=${username}`, { method: 'GET' });
-      if (res.data?.pregunta) {
-        setSecurityQuestion(res.data.pregunta);
+      const res = await authApi.securityQuestion(username);
+      if (res.data?.pregunta_seguridad) {
+        setSecurityQuestion(res.data.pregunta_seguridad);
         setStep(2);
       } else {
         setError('El usuario no tiene pregunta de seguridad configurada.');
@@ -37,21 +60,36 @@ export function ForgotPasswordPage() {
 
   const handleResetSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (newPassword.length < 8) {
+      setError('La contraseña debe tener al menos 8 caracteres');
+      return;
+    }
     setLoading(true);
     setError('');
     try {
-      await apiRequest('/auth/forgot-password', {
-        method: 'POST',
-        body: JSON.stringify({
-          username,
-          respuesta_seguridad: securityAnswer,
-          new_password: newPassword
-        })
+      await authApi.forgotPassword({
+        username,
+        respuesta_seguridad: securityAnswer,
+        new_password: newPassword
       });
       setSuccess(true);
       setTimeout(() => navigate('/login'), 3000);
     } catch (err: any) {
-      setError(err.message || 'Error al restablecer contraseña');
+      const msg = err.message || 'Error al restablecer contraseña';
+      if (msg.includes('hasta')) {
+        // Parse ISO date from error string like "Recuperación bloqueada hasta 2026-05-27T16:00:00.000Z"
+        const match = msg.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
+        if (match) {
+          setLockUntil(new Date(match[0]));
+          setError('Demasiados intentos fallidos.');
+        } else {
+          setError(msg);
+        }
+      } else if (msg.includes('incorrecta')) {
+         setError('Respuesta de seguridad incorrecta.');
+      } else {
+         setError(msg);
+      }
     } finally {
       setLoading(false);
     }
@@ -147,15 +185,21 @@ export function ForgotPasswordPage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
-                minLength={6}
+                minLength={8}
               />
+              <p className="text-xs text-gray-400 mt-2">Mínimo 8 caracteres.</p>
             </div>
             
-            {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+            {error && (
+              <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded-lg border border-red-100">
+                {error}
+                {lockUntil && <div className="font-bold mt-1">Espera {countdown} para reintentar</div>}
+              </div>
+            )}
 
             <button 
               type="submit" 
-              disabled={loading || !securityAnswer || !newPassword}
+              disabled={loading || !securityAnswer || !newPassword || !!lockUntil}
               className="w-full py-3 text-white font-bold rounded-full transition-transform hover:scale-105 hover:shadow-lg disabled:opacity-70 disabled:hover:scale-100"
               style={{ background: `linear-gradient(90deg, ${primaryColor} 0%, #A81B85 100%)` }}
             >
