@@ -16,11 +16,14 @@ export function DashboardPage() {
 
   useEffect(() => {
     setLoading(true);
-    
+    // No enviamos pais_id - el backend aplica el scope automáticamente por el token JWT
+    // (para superadmin muestra todo, para admin_pais filtra su país)
+    const filters = {};
+
     Promise.all([
-      noticiasApi.getAll(),
-      canManageRequests(user?.rol) ? solicitudesApi.getAll() : Promise.resolve({ data: [] }),
-      testimoniosApi.getAll()
+      noticiasApi.getAll(filters),
+      canManageRequests(user?.rol) ? solicitudesApi.getAll(filters) : Promise.resolve({ data: [] }),
+      testimoniosApi.getAll(filters)
     ])
       .then(([news, requests, testimonials]) => {
         const newsData = news.data || [];
@@ -75,15 +78,6 @@ export function DashboardPage() {
           </h1>
           <p className="text-gray-500 mt-1">Monitorea el estado y progreso de la plataforma.</p>
         </div>
-        <button 
-          className="px-6 py-2.5 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2 hover:-translate-y-1"
-          style={{ backgroundColor: primaryColor, boxShadow: `0 10px 15px -3px ${primaryColor}40` }}
-        >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Nuevo Artículo
-        </button>
       </motion.div>
 
       {/* Top Cards */}

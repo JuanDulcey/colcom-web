@@ -10,6 +10,7 @@ import { formatDate } from '../../utils/formatDate.js';
 import { useAuth } from '../../hooks/useAuth.js';
 import { navigate } from '../../routes/navigation.js';
 import { motion } from 'framer-motion';
+import { useCountry } from '../../hooks/useCountry.js';
 
 const apiByType = {
   noticias: noticiasApi,
@@ -25,28 +26,27 @@ export function ContentListPage({ type }) {
   const api = apiByType[type];
   const label = labels[type];
   const { user } = useAuth();
+  const { activeCountry } = useCountry();
   const [items, setItems] = useState([]);
-  const [countries, setCountries] = useState([]);
-  const [filters, setFilters] = useState({ estado: '', pais_id: '' });
+  const [filters, setFilters] = useState({ estado: '' });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   const load = () => {
     setLoading(true);
     setError('');
-    api.getAll(filters)
+    // Solo enviamos estado si tiene valor - el backend filtra el país por token JWT
+    const query: Record<string, string> = {};
+    if (filters.estado) query.estado = filters.estado;
+    
+    api.getAll(query)
       .then((response) => setItems(response.data || []))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   };
 
-  useEffect(load, [type, filters.estado, filters.pais_id]);
+  useEffect(load, [type, filters.estado, activeCountry?.id]);
 
-  useEffect(() => {
-    if (user?.rol === 'superadmin') {
-      paisesApi.all().then((data) => setCountries(Array.isArray(data) ? data : [])).catch(() => setCountries([]));
-    }
-  }, [user?.rol]);
 
   const remove = async (id) => {
     await api.remove(id);
@@ -66,16 +66,6 @@ export function ContentListPage({ type }) {
           <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">{label.title}</h1>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          {user?.rol === 'superadmin' && (
-            <select 
-              className="bg-white border border-gray-200 text-gray-700 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-[#7A0A83] focus:border-transparent outline-none shadow-sm transition-all"
-              value={filters.pais_id} 
-              onChange={(e) => setFilters({ ...filters, pais_id: e.target.value })}
-            >
-              <option value="">Todos los países</option>
-              {countries.map((country) => <option key={country.id} value={country.id}>{country.nombre}</option>)}
-            </select>
-          )}
           <select 
             className="bg-white border border-gray-200 text-gray-700 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-[#7A0A83] focus:border-transparent outline-none shadow-sm transition-all"
             value={filters.estado} 
@@ -123,7 +113,7 @@ export function ContentListPage({ type }) {
                     <td className="py-4 px-6">
                       <p className="font-semibold text-gray-900 group-hover:text-[#7A0A83] transition-colors">{item.titulo || item.nombre}</p>
                     </td>
-                    <td className="py-4 px-6 text-gray-600">{item.paises?.nombre || 'General'}</td>
+                    <td className="py-4 px-6 text-gray-600">{item.pais_nombre || item.paises?.nombre || 'General'}</td>
                     <td className="py-4 px-6"><StatusBadge value={item.estado} /></td>
                     <td className="py-4 px-6 text-gray-500 text-sm">{formatDate(item.fecha_publicacion || item.created_at)}</td>
                     <td className="py-4 px-6 text-right space-x-2">
